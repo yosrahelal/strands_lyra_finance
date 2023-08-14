@@ -18,7 +18,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   // get lyra addresses
   const lyraGlobal = getGlobalDeploys(params.network);
   const lyraMarket = getMarketDeploys(params.network, params.vault.market);
-
+/*
   await deploy('LyraVault', {
     from: deployer,
     args: [
@@ -36,6 +36,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     ],
     log: true,
   });
+  */
 };
 export default func;
 func.tags = ['LyraVault'];

@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "../../strands_lyra"
+		},
+		{
+			"path": "../../Strands_test"
+		},
+		{
+			"path": "../../lyra-protocol"
+		},
+		{
+			"path": "../../lyra-vaults"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {}
+}

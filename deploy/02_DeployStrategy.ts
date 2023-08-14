@@ -5,6 +5,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { loadParams } from '../scripts/utils';
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+    /*
   const { deployments, getNamedAccounts } = hre;
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
@@ -53,6 +54,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     ).address,
   );
   console.log('setStrategy complete...');
+*/
 };
 export default func;
 func.tags = ['DeployStrategy'];
