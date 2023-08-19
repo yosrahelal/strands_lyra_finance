@@ -13,6 +13,14 @@ interface IStrategy {
       uint premium,
       uint collateralAdded
     );
+  
+   function doTrade(uint strikeId, address rewardRecipient, uint size)
+    external
+    returns (
+      uint positionId,
+      uint premium,
+      uint collateralAdded
+    );
 
   function reducePosition(
     uint positionId,

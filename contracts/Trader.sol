@@ -1,56 +1,36 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.9;
-import {LyraAdapter} from "@lyrafinance/protocol/contracts/periphery/LyraAdapter.sol";
-import {OptionMarket} from "@lyrafinance/protocol/contracts/OptionMarket.sol";
-// Libraries
+
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract Trader is LyraAdapter {
-  uint[] public activePositionIds;
+import {LyraVault} from "./core/LyraVault.sol";
+import {Vault} from "./libraries/Vault.sol";
 
-  constructor() LyraAdapter() {}
+import {IStrategy} from "./interfaces/IStrategy.sol";
 
-  function initAdapter(
-    address _lyraRegistry,
-    address _optionMarket,
-    address _curveSwap,
-    address _feeCounter
-  ) external onlyOwner {
-    // set addresses for LyraAdapter
-    setLyraAddresses(_lyraRegistry, _optionMarket, _curveSwap, _feeCounter);
+contract Trader is LyraVault {
+
+  constructor(
+    address _susd,
+    address _feeRecipient,
+    uint _roundDuration,
+    string memory _tokenName,
+    string memory _tokenSymbol,
+    Vault.VaultParams memory _vaultParams
+  ) LyraVault(_susd, _feeRecipient, _roundDuration, _tokenName, _tokenSymbol, _vaultParams) {
   }
 
   function buyStraddle(uint size, uint strikeId) public {
-    // Get the strike price from the market
-    uint price = optionMarket.getStrike(strikeId).strikePrice;
-    // approve quote for optionMarket to perform transferFrom (of optionMarket)
-    quoteAsset.approve(address(optionMarket), type(uint).max);
-    // transfer amount of the strike
-    quoteAsset.transferFrom(msg.sender, address(this), price);
-    // call position
-    _openNewPosition(strikeId, OptionType(uint(0)), size);
-    // put position
-    _openNewPosition(strikeId, OptionType(uint(1)), size);
+    require(vaultState.roundInProgress, "round closed");
+    // perform trade through strategy
+    (uint positionId, uint premiumReceived, uint capitalUsed) = strategy.doTrade(strikeId, lyraRewardRecipient, size);
+
+    // update the remaining locked amount
+    vaultState.lockedAmountLeft = vaultState.lockedAmountLeft - capitalUsed;
+
+    // todo: udpate events
+    emit Trade(msg.sender, positionId, premiumReceived, capitalUsed);
   }
 
-  function _openNewPosition(
-    uint strikeId,
-    OptionType optionType,
-    uint amount
-  ) internal {
-    TradeInputParameters memory tradeParams = TradeInputParameters({
-      strikeId: strikeId,
-      positionId: 0, // if 0, new position is created
-      iterations: 1, // more iterations use more gas but incur less slippage
-      optionType: optionType,
-      amount: amount,
-      setCollateralTo: 0, // set to 0 if opening long
-      minTotalCost: 0,
-      maxTotalCost: 5 ether,
-      rewardRecipient: address(0)
-    });
-
-    TradeResult memory result = _openPosition(tradeParams); // built-in LyraAdapter.sol function
-    activePositionIds.push(result.positionId);
-  }
 }
