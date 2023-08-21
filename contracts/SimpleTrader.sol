@@ -25,21 +25,43 @@ contract SimpleTrader is LyraAdapter {
    returns (
      uint positionId,
      uint premiumPayed,
-     uint capitalUsed
+     uint capitalUsed,
+     uint positionId2,
+     uint premiumPayed2,
+     uint capitalUsed2
    )
  {
    // premium willing to pay
    (uint callPremium, uint putPremium)= _getPurePremiumForStrike(strikeId);
    uint priceCall = callPremium + (callPremium * 10 / 100);
-
+   uint pricePut = putPremium + (putPremium * 10 / 100);
+  
    require(
     quoteAsset.transferFrom(msg.sender, address(this), priceCall),
-     "quote asset transfer failed for call"
+     "quote asset transfer failed"
    );
-
    (positionId, premiumPayed) = _buyStrike(strikeId, priceCall, size, OptionType(uint(0)));
+
+   require(
+    quoteAsset.transferFrom(msg.sender, address(this), pricePut),
+     "quote asset transfer failed"
+   );
+   (positionId2, premiumPayed2) = _buyStrike(strikeId, pricePut, size, OptionType(uint(1)));
+
    capitalUsed = premiumPayed;
+   capitalUsed2 = premiumPayed2;
+
+   // refund the user 
+   uint remaining = (priceCall + pricePut) - (premiumPayed + premiumPayed2);
+   require(quoteAsset.transfer(msg.sender, remaining));
  }
+
+ function getPremium(uint strikeId) public view returns (
+  uint callPremium,
+  uint putPremium)
+  {
+    (callPremium, putPremium)= _getPurePremiumForStrike(strikeId);
+  }
 
  function _buyStrike(
   uint strikeId,

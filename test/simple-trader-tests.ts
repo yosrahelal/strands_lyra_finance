@@ -86,9 +86,7 @@ describe('Trader integration test', async () => {
     let strikes: BigNumber[] = [];
     before('create fake susd for users', async () => {
       await susd.mint(randomUser.address, toBN('1000000'));
-      await susd.mint(randomUser2.address, toBN('1000000'));
       await susd.connect(randomUser).approve(trader.address, toBN('5000'));
-      await susd.connect(randomUser2).approve(trader.address, toBN('5000'));
 
     });
     before('set strikes array', async () => {
@@ -96,16 +94,19 @@ describe('Trader integration test', async () => {
     });
 
     it('should trade when delta and vol are within range', async () => {
+      const userSUSDBalance = await susd.balanceOf(randomUser.address);
       const marketSUSDBalance = await susd.balanceOf(lyraTestSystem.optionMarket.address);
+      expect(marketSUSDBalance.isZero()).to.be.true;
 
-      // 3350 is a good strike
-      const tx = await trader.connect(randomUser).buyStraddle(strikes[0], toBN('1'));
-      const receipt = await tx.wait();
+      await trader.connect(randomUser).buyStraddle(strikes[0], toBN('0.5'));
 
       const marketSUDCBalanceAfter = await susd.balanceOf(lyraTestSystem.optionMarket.address);    
-      expect(marketSUSDBalance.isZero()).to.be.true;
       // check that we receive sUSD
       expect(marketSUDCBalanceAfter.sub(marketSUSDBalance).gt(0)).to.be.true;
+
+      // check that the trader refunded all the sUSD 
+      const traderBalanceAfter = await susd.balanceOf(trader.address);
+      expect(traderBalanceAfter.isZero()).to.be.true;
     });
   });
 });

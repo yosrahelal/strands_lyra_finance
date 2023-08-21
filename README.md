@@ -15,12 +15,12 @@ npx hardhat run scripts/deploy.ts --network local
 ```
 ```
 contract name: SynthetixAdapter
-address: 0x07C5b1Ce71F98b75d3b32746882fa717d0b262cc
+address: 0xaca81583840B1bf2dDF6CDe824ada250C1936B4D
 contract name: OptionMarket
-address: 0x6672CedbF8dAfcC50B21EB36b8A86fA36b33e055
+address: 0x1780bCf4103D3F501463AD3414c7f4b654bb7aFd
 contract name: ProxyERC20sUSD
-address : 0x9E75B06188B417512Bd9d1751b5cA21507D1Fc66
-Tx for opening call position  0x993dfe60d69399dca092e781917cdd9490e31811fc35ac22026205fa697c3a94
+address : 0x045857BDEAE7C1c7252d611eB24eB55564198b4C
+Tx for opening call position  0xfc988ed266ede878364fce829ad88659d7e2148e2a85e5015e367e7fb26322f0
 strike 1 details  [
   BigNumber { value: "1" },
   BigNumber { value: "1500000000000000000000" },
@@ -41,31 +41,38 @@ strike 1 details  [
   shortPut: BigNumber { value: "0" },
   boardId: BigNumber { value: "1" }
 ]
-TraderExample with deployed to 0x61Ecf089F2Bb3BE350AC4914aDFe3e158a4c5755
-balance before buy :  BigNumber { value: "999664852324552754975039" }
-balance option market before buy :  BigNumber { value: "2103762948565260844" }
+TraderExample with deployed to 0xAe120F0df055428E45b264E7794A18c54a2a3fAF
+balance user before buy :  BigNumber { value: "1000000000000000000000000000" }
+balance option market before buy :  BigNumber { value: "2103762990720393278" }
+premiumPayedCall =  BigNumber { value: "167696406560187495801" }
+premiumPayedPut =  BigNumber { value: "42702556229347019981" }
+user payed for put and call  BigNumber { value: "210398962789534515782" }
+premiumPayedCall =  BigNumber { value: "167696406560187495801" }
+capitalUsedPut =  BigNumber { value: "42702556229347019981" }
+capital used for put and call =  BigNumber { value: "210398962789534515782" }
 strike 1 details [
   BigNumber { value: "1" },
   BigNumber { value: "1500000000000000000000" },
   BigNumber { value: "903000000000000000" },
-  BigNumber { value: "2000000000000000000" },
+  BigNumber { value: "1500000000000000000" },
   BigNumber { value: "0" },
   BigNumber { value: "0" },
-  BigNumber { value: "0" },
+  BigNumber { value: "500000000000000000" },
   BigNumber { value: "0" },
   BigNumber { value: "1" },
   id: BigNumber { value: "1" },
   strikePrice: BigNumber { value: "1500000000000000000000" },
   skew: BigNumber { value: "903000000000000000" },
-  longCall: BigNumber { value: "2000000000000000000" },
+  longCall: BigNumber { value: "1500000000000000000" },
   shortCallBase: BigNumber { value: "0" },
   shortCallQuote: BigNumber { value: "0" },
-  longPut: BigNumber { value: "0" },
+  longPut: BigNumber { value: "500000000000000000" },
   shortPut: BigNumber { value: "0" },
   boardId: BigNumber { value: "1" }
 ]
-balance after buy:  BigNumber { value: "999319331529120162528158" }
-balance market after buy:  BigNumber { value: "4208077958199588328" }
+balance user after buy:  BigNumber { value: "999999789601235551915653015" }
+balance market after buy:  BigNumber { value: "4084061932825616780" }
+trader balance  BigNumber { value: "0" }
 ```
 ![Alt text](img/simpleScript1.png)
 ![Alt text](img/simpleScript2.png)
